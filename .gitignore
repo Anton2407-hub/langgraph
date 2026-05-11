@@ -1,0 +1,21 @@
+# Secrets
+.env
+
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+01_*.ipynb
+
+# Data / models (heavy files)
+data/db/
+
+# macOS
+.DS_Store

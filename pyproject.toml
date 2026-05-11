@@ -1,0 +1,37 @@
+[project]
+name = "langgraph-agent"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    # LangGraph & LangChain
+    "langgraph>=0.2",
+    "langchain-core>=0.3",
+    "langchain-groq>=0.2",
+    "langchain-huggingface>=0.1",
+    "langchain-qdrant>=0.2",
+    "langchain-community>=0.3",
+    "langchain-tavily>=0.1",
+    "langsmith>=0.2",
+
+    # Vector store
+    "qdrant-client>=1.9",
+
+    # Retrieval extras
+    "flashrank>=0.2",
+    "rank-bm25>=0.2",
+
+    # ML / embeddings
+    "torch>=2.2",
+    "sentence-transformers>=3.0",
+
+    # Utils
+    "python-dotenv>=1.0",
+    "pandas>=2.0",
+    "tqdm>=4.66",
+
+    # Jupyter
+    "ipykernel>=6.29",
+]
+
+[tool.uv]
+dev-dependencies = []
