@@ -9,7 +9,6 @@ from .logger import get_logger
 
 log = get_logger("nodes")
 
-
 def _format_docs(docs) -> str:
     parts = []
     for i, doc in enumerate(docs, 1):
