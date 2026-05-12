@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "hr_agent_v2": "src.graph:app"
+  },
+  "env": ".env"
+}

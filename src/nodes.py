@@ -20,6 +20,7 @@ def _format_docs(docs) -> str:
             f"Компания: {m.get('employer', 'N/A')}",
             f"Локация: {m.get('area', 'N/A')}",
             f"Скиллы: {', '.join(m.get('extracted_skills', []))}",
+            f"Ссылка: {m.get('url', 'N/A')}",
             f"Описание: {doc.page_content[:300]}...",
         ])
         parts.append(entry)
@@ -35,7 +36,8 @@ def _parse_tavily(raw, max_chars: int = 1500) -> str:
 
 
 class QueryClassification(BaseModel):
-    query_type: Literal["vacancies", "salary", "both", "smalltalk"]
+    query_type:     Literal["vacancies", "salary", "both", "smalltalk"]
+    semantic_query: str
 
 
 _classifier_llm = llm.with_structured_output(QueryClassification)
@@ -51,18 +53,22 @@ def classify_node(state: HRState) -> dict:
             "- vacancies  — ищет вакансии или работу\n"
             "- salary     — спрашивает зарплаты или рынок труда\n"
             "- both       — нужны и вакансии, и зарплаты/рынок\n"
-            "- smalltalk  — не про работу совсем\n"
+            "- smalltalk  — не про работу совсем\n\n"
+            "Также сформулируй semantic_query — лаконичный поисковый запрос "
+            "для семантического поиска по базе вакансий (на русском, без лишних слов). "
+            "Для smalltalk верни semantic_query=''.\n"
             "Только схема, без объяснений."
         )),
         HumanMessage(content=query),
     ])
-    log.info("classify_node → query_type='%s'", result.query_type)
-    return {"query_type": result.query_type}
+    log.info("classify_node → query_type='%s'  semantic_query='%s'",
+             result.query_type, result.semantic_query[:80])
+    return {"query_type": result.query_type, "semantic_query": result.semantic_query}
 
 
 def qdrant_node(state: HRState) -> dict:
-    query = state["messages"][-1].content
-    log.info("qdrant_node ← '%s'", query[:80])
+    query = state["semantic_query"] or state["messages"][-1].content
+    log.info("qdrant_node ← semantic_query='%s'", query[:80])
 
     docs = retriever.invoke(query)
     results = _format_docs(docs)
